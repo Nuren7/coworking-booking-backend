@@ -1,7 +1,11 @@
-import { io } from "../server.js";
+let io;
 
-// Send booking created notification
+export function initSocket(serverIo) {
+  io = serverIo;
+}
+
 export function sendBookingNotification(booking) {
+  if (!io) return;
   io.emit("booking_created", {
     roomId: booking.roomId,
     userId: booking.userId,
