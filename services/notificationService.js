@@ -1,11 +1,11 @@
-exports.notifyBookingCreated = (io, user, booking) => {
-  io?.to(String(user._id)).emit('booking:created', booking);
-};
+import { io } from "../server.js";
 
-exports.notifyBookingUpdated = (io, user, booking) => {
-  io?.to(String(user._id)).emit('booking:updated', booking);
-};
-
-exports.notifyBookingDeleted = (io, user, booking) => {
-  io?.to(String(user._id)).emit('booking:deleted', booking);
-};
+// Send booking created notification
+export function sendBookingNotification(booking) {
+  io.emit("booking_created", {
+    roomId: booking.roomId,
+    userId: booking.userId,
+    startTime: booking.startTime,
+    endTime: booking.endTime,
+  });
+}

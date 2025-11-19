@@ -1,21 +1,45 @@
-const Room = require('../models/Room');
+import Room from "../models/Room.js";
+import { getRooms, invalidateRoomsCache } from "../services/roomService.js";
 
-exports.createRoom = async (req, res) => {
-  const room = await Room.create(req.body);
-  res.status(201).json(room);
-};
+// GET /rooms
+export async function getAllRooms(req, res) {
+  try {
+    const rooms = await getRooms();
+    res.json(rooms);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch rooms" });
+  }
+}
 
-exports.getRooms = async (req, res) => {
-  const rooms = await Room.find();
-  res.json(rooms);
-};
+// POST /rooms
+export async function createRoom(req, res) {
+  try {
+    const room = await Room.create(req.body);
+    await invalidateRoomsCache();
+    res.status(201).json(room);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to create room" });
+  }
+}
 
-exports.updateRoom = async (req, res) => {
-  const room = await Room.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  res.json(room);
-};
+// PUT /rooms/:id
+export async function updateRoom(req, res) {
+  try {
+    const room = await Room.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    await invalidateRoomsCache();
+    res.json(room);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update room" });
+  }
+}
 
-exports.deleteRoom = async (req, res) => {
-  await Room.findByIdAndDelete(req.params.id);
-  res.status(204).end();
-};
+// DELETE /rooms/:id
+export async function deleteRoom(req, res) {
+  try {
+    await Room.findByIdAndDelete(req.params.id);
+    await invalidateRoomsCache();
+    res.status(204).end();
+  } catch (err) {
+    res.status(500).json({ error: "Failed to delete room" });
+  }
+}

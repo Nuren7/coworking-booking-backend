@@ -1,20 +1,12 @@
-const { createClient } = require('redis');
-const logger = require('../utils/logger');
+import { createClient } from "redis";
 
+const client = createClient({
+  url: "redis://localhost:6379"
+});
 
-let client;
+client.on("connect", () => console.log("Connected to Redis (Docker)!"));
+client.on("error", (err) => console.error("Redis error:", err));
 
-
-const initRedis = async (redisUrl) => {
-client = createClient({ url: redisUrl });
-client.on('error', (err) => logger.error('Redis Client Error', err));
 await client.connect();
-logger.info('Redis connected');
-return client;
-};
 
-
-const getRedisClient = () => client;
-
-
-module.exports = { initRedis, getRedisClient };
+export default client;
