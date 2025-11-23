@@ -1,0 +1,164 @@
+{
+  "info": {
+    "name": "Coworking Booking Backend",
+    "_postman_id": "e8f39b36-1c5f-4f5e-b4d8-123456789abc",
+    "description": "Full API collection for testing the Coworking Booking Backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"123456\",\n  \"role\": \"User\"\n}"
+            },
+            "url": { "raw": "http://localhost:3000/api/register", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api","register"] }
+          }
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if(json.token){ pm.environment.set('jwt_token', json.token); }"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": { "raw": "http://localhost:3000/api/login", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api","login"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Rooms",
+      "item": [
+        {
+          "name": "Get All Rooms",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": { "raw": "http://localhost:3000/api/rooms", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api","rooms"] }
+          }
+        },
+        {
+          "name": "Create Room (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Conference A\",\n  \"capacity\": 8,\n  \"type\": \"conference\"\n}"
+            },
+            "url": { "raw": "http://localhost:3000/api/rooms", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api","rooms"] }
+          }
+        },
+        {
+          "name": "Update Room (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Conference B\",\n  \"capacity\": 10,\n  \"type\": \"conference\"\n}"
+            },
+            "url": { "raw": "http://localhost:3000/api/rooms/{{room_id}}", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api","rooms","{{room_id}}"] }
+          }
+        },
+        {
+          "name": "Delete Room (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": { "raw": "http://localhost:3000/api/rooms/{{room_id}}", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api","rooms","{{room_id}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Get Bookings",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": { "raw": "http://localhost:3000/api/bookings", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api","bookings"] }
+          }
+        },
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roomId\": \"{{room_id}}\",\n  \"startTime\": \"2025-11-25T10:00:00.000Z\",\n  \"endTime\": \"2025-11-25T12:00:00.000Z\"\n}"
+            },
+            "url": { "raw": "http://localhost:3000/api/bookings", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api","bookings"] }
+          }
+        },
+        {
+          "name": "Update Booking",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startTime\": \"2025-11-25T13:00:00.000Z\",\n  \"endTime\": \"2025-11-25T14:00:00.000Z\"\n}"
+            },
+            "url": { "raw": "http://localhost:3000/api/bookings/{{booking_id}}", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api","bookings","{{booking_id}}"] }
+          }
+        },
+        {
+          "name": "Delete Booking",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": { "raw": "http://localhost:3000/api/bookings/{{booking_id}}", "protocol": "http", "host": ["localhost"], "port": "3000", "path": ["api","bookings","{{booking_id}}"] }
+          }
+        }
+      ]
+    }
+  ]
+}
